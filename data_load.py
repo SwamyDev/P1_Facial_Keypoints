@@ -171,6 +171,25 @@ class RandomVFlip(object):
         return {'image': image, 'keypoints': key_pts}
 
 
+class RandomContrastReduction(object):
+    """
+    Apply contrast reduction with the given probability and shift
+    X = shift*X + (1 - shift) * mean(X)
+    """
+
+    def __init__(self, probability, shift):
+        self.probability = probability
+        self.shift = shift
+
+    def __call__(self, sample):
+        image, key_pts = sample['image'], sample['keypoints']
+        if np.random.rand() < self.probability:
+            mean = image.mean()
+            image = image * self.shift + (1.0 - self.shift) * mean
+
+        return {'image': image, 'keypoints': key_pts}
+
+
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
 
