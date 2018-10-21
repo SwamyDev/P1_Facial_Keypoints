@@ -190,6 +190,42 @@ class RandomContrastReduction(object):
         return {'image': image, 'keypoints': key_pts}
 
 
+class RandomRot(object):
+    """Rotate image randomly by the specified probability and angle [deg]"""
+
+    def __init__(self, probability, angle):
+        self.probability = probability
+        self.angle = angle
+
+    def __call__(self, sample):
+        image, key_pts = sample['image'], sample['keypoints']
+        h, w = image.shape[:2]
+
+        if np.random.rand() < self.probability:
+            mean = image.mean()
+            a_deg = self.angle * np.random.choice([-1, 1])
+            img_r = cv2.getRotationMatrix2D((w / 2, h / 2), a_deg, 1)
+            image = cv2.warpAffine(image, img_r, (w, h), borderMode=cv2.BORDER_CONSTANT, borderValue=mean)
+
+            pts_r = self._calc_point_rotation_matrix(a_deg)
+            center = [w / 2, h / 2]
+
+            def point_rotation(pt):
+                pt -= center
+                pt = np.dot(pts_r, pt)
+                return pt + center
+
+            key_pts = np.array([point_rotation(pt) for pt in key_pts])
+
+        return {'image': image, 'keypoints': key_pts}
+
+    @staticmethod
+    def _calc_point_rotation_matrix(a_deg):
+        theta = np.radians(a_deg)
+        c, s = np.cos(theta), np.sin(theta)
+        return np.array(((c, s), (-s, c)))
+
+
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
 
