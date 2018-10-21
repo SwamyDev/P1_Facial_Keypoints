@@ -20,9 +20,9 @@ def _flatten(x):
     return x.view(x.size(0), -1)
 
 
-class Net(nn.Module):
+class LeNet5(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(LeNet5, self).__init__()
 
         self.conv1 = _init_conv(nn.Conv2d(1, 32, 3))
         self.pool1 = nn.MaxPool2d(2, 2)
