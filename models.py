@@ -71,6 +71,9 @@ class LeNet5Dropout(nn.Module):
         self.drop3 = nn.Dropout(0.3)
 
         self.dens4 = _init_dense(nn.Linear(15488, 500))
+        self.drop4 = nn.Dropout(0.5)
+
+        self.dens5 = _init_dense(nn.Linear(500, 500))
 
         self.output = _init_dense(nn.Linear(500, 136))
 
@@ -90,6 +93,9 @@ class LeNet5Dropout(nn.Module):
         x = _flatten(x)
 
         x = _activation(self.dens4(x))
+        x = self.drop4(x)
+
+        x = _activation(self.dens5(x))
 
         return self.output(x)
 
