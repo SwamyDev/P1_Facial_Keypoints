@@ -20,6 +20,53 @@ def _flatten(x):
     return x.view(x.size(0), -1)
 
 
+# ! My FINAL model !
+class LeNet5Dropout(nn.Module):
+    def __init__(self):
+        super(LeNet5Dropout, self).__init__()
+
+        self.conv1 = _init_conv(nn.Conv2d(1, 32, 3))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        self.drop1 = nn.Dropout(0.1)
+
+        self.conv2 = _init_conv(nn.Conv2d(32, 64, 2))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        self.drop2 = nn.Dropout(0.2)
+
+        self.conv3 = _init_conv(nn.Conv2d(64, 128, 2))
+        self.pool3 = nn.MaxPool2d(2, 2)
+        self.drop3 = nn.Dropout(0.3)
+
+        self.dens4 = _init_dense(nn.Linear(15488, 1000))
+        self.drop4 = nn.Dropout(0.5)
+
+        self.dens5 = _init_dense(nn.Linear(1000, 1000))
+
+        self.output = _init_dense(nn.Linear(1000, 136))
+
+    def forward(self, x):
+        x = _activation(self.conv1(x))
+        x = self.pool1(x)
+        x = self.drop1(x)
+
+        x = _activation(self.conv2(x))
+        x = self.pool2(x)
+        x = self.drop2(x)
+
+        x = _activation(self.conv3(x))
+        x = self.pool3(x)
+        x = self.drop3(x)
+
+        x = _flatten(x)
+
+        x = _activation(self.dens4(x))
+        x = self.drop4(x)
+
+        x = _activation(self.dens5(x))
+
+        return self.output(x)
+
+    
 class LeNet5(nn.Module):
     def __init__(self):
         super(LeNet5, self).__init__()
@@ -50,52 +97,6 @@ class LeNet5(nn.Module):
         x = _flatten(x)
 
         x = _activation(self.dens4(x))
-
-        return self.output(x)
-
-
-class LeNet5Dropout(nn.Module):
-    def __init__(self):
-        super(LeNet5Dropout, self).__init__()
-
-        self.conv1 = _init_conv(nn.Conv2d(1, 32, 3))
-        self.pool1 = nn.MaxPool2d(2, 2)
-        self.drop1 = nn.Dropout(0.1)
-
-        self.conv2 = _init_conv(nn.Conv2d(32, 64, 2))
-        self.pool2 = nn.MaxPool2d(2, 2)
-        self.drop2 = nn.Dropout(0.2)
-
-        self.conv3 = _init_conv(nn.Conv2d(64, 128, 2))
-        self.pool3 = nn.MaxPool2d(2, 2)
-        self.drop3 = nn.Dropout(0.3)
-
-        self.dens4 = _init_dense(nn.Linear(15488, 500))
-        self.drop4 = nn.Dropout(0.5)
-
-        self.dens5 = _init_dense(nn.Linear(500, 500))
-
-        self.output = _init_dense(nn.Linear(500, 136))
-
-    def forward(self, x):
-        x = _activation(self.conv1(x))
-        x = self.pool1(x)
-        x = self.drop1(x)
-
-        x = _activation(self.conv2(x))
-        x = self.pool2(x)
-        x = self.drop2(x)
-
-        x = _activation(self.conv3(x))
-        x = self.pool3(x)
-        x = self.drop3(x)
-
-        x = _flatten(x)
-
-        x = _activation(self.dens4(x))
-        x = self.drop4(x)
-
-        x = _activation(self.dens5(x))
 
         return self.output(x)
 
