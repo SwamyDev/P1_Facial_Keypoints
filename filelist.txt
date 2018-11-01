@@ -1,0 +1,8 @@
+data_load.py
+models.py
+2. Define the Network Architecture.html
+2. Define the Network Architecture.ipynb
+3. Facial Keypoint Detection, Complete Pipeline.html
+3. Facial Keypoint Detection, Complete Pipeline.ipynb
+4. Fun with Keypoints.html
+4. Fun with Keypoints.ipynb
